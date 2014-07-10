@@ -1,0 +1,26 @@
+#!monit
+# This should be installed in /etc/monit/conf.d/
+
+check process nursery-alert with pidfile "/var/run/nursery-alert.pid"
+    start program = "/sbin/start nursery-alert"
+    stop program  = "/sbin/stop nursery-alert"
+    if failed port 80 protocol HTTP
+        request /ping
+        with timeout 10 seconds
+        then restart
+
+#check process nursery-alert-display with pidfile "/var/run/nursery-alert-display.pid"
+#    start program = "/sbin/start nursery-alert-display"
+#    stop program = "/sbin/stop nursery-alert-display"
+#    if failed port 4000 protocol HTTP
+#        request /
+#        with timeout 10 seconds
+#        then restart
+
+check process nursery-alert-display with pidfile "/var/run/nursery-alert-display.pid"
+    start program = "/usr/bin/python /home/met/bin/nursery_alert/display/AlertListener.py"
+    stop program = "/bin/kill `cat /var/run/nursery-alert-display`"
+    if failed port 4000 protocol HTTP
+        request /
+        with timeout 10 seconds
+        then restart

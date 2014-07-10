@@ -1,0 +1,25 @@
+{
+  "name": "nuseryalert-manager",
+  "version": "0.0.1",
+  "private": true,
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -R spec -C"
+  },
+  "dependencies": {
+    "express": "~3.5.2",
+    "express-params": "~0.0.3",
+    "jsclass": "~4.0.5",
+    "lodash": "~2.4.1",
+    "passport": "~0.2.0",
+    "passport-http": "~0.2.2"
+  },
+  "devDependencies": {
+    "mocha": "~1.18.2",
+    "sinon": "~1.9.1",
+    "should": "~3.3.1",
+    "istanbul": "^0.2.7",
+    "request": "~2.34.0"
+  }
+}

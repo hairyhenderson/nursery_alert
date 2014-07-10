@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Nursery Alerts</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <style type="text/css">
+    .alert-time {
+        color: #808080;
+        font-style: italic;
+    }
+    .error input {
+        color: #b94a48;
+        border-color: #b94a48;
+    }
+    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+        display: none !important;
+    }
+    .glyphicon-cog {
+        font-size: 2em;
+    }
+    </style>
+</head>
+
+<body ng-app="nursery-alerts">
+    <div class="container" ng-controller="AlertController">
+        <div class="row">
+            <div class="col-xs-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+                <h1>Nursery Alerts</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+                <p class="small">
+                    <em>Enter the pager code in the text box and hit
+                        <code>Submit</code>. The code will be displayed for 1 minute in the Sanctuary.</em>
+                </p>
+            </div>
+        </div>
+        <div class="row" ng-cloak>
+            <div class="col-xs-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+                <form name="codeForm" novalidate>
+                    <div class="input-group input-group-lg" ng-class="{error: codeForm.code.$invalid &amp;&amp; !codeForm.code.$pristine}">
+                        <input type="text" name="code" class="form-control" placeholder="Pager code" maxlength="3" autofocus required ng-model="pagerCode" valid-code/>
+                        <span class="input-group-btn">
+                            <button ng-click="sendAlert(pagerCode)" ng-disabled="codeForm.$invalid" class="btn btn-primary">Submit <b ng-hide="codeForm.$invalid">{{pagerCode}}</b>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+                <nurseryalert ng-repeat="log in alerts"></nurseryalert>
+            </div>
+        </div>
+    </div>
+    <script src="//cdn.jsdelivr.net/angularjs/1.2.15/angular.min.js"></script>
+    <script src="//cdn.jsdelivr.net/angularjs/1.2.15/angular-resource.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>
+    <script src="//cdn.jsdelivr.net/angular.moment/0.6.2/angular-moment.min.js"></script>
+    <script>
+    'use strict';
+
+    var app = angular.module('nursery-alerts', ['angularMoment', 'ngResource']);
+    app.directive('validCode', function() {
+        return {
+            require: 'ngModel',
+            link: function(scope, element, attrs, ngModel) {
+                var validCode = function(inputValue) {
+                    if (inputValue) {
+                        var capitalized = inputValue.toUpperCase();
+                        var valid = /^[A-Z0-9]{3,3}/.test(capitalized);
+                        ngModel.$setValidity('pattern', valid);
+
+                        if (capitalized !== inputValue) {
+                            ngModel.$setViewValue(capitalized);
+                            ngModel.$render();
+                        }
+                        return capitalized;
+                    }
+                }
+                ngModel.$parsers.push(validCode);
+            }
+        };
+    });
+    app.directive('nurseryalert', function() {
+        var template = '<div><div class="hidden-xs alert alert-info alert-dismissable">';
+        template += '<button type="button" class="close" data-dismiss="alert" aria-hidden="true" ng-click="cancelAlert(log.code)">&times;</button>';
+        template += '<time datetime="{{log.starttime | amDateFormat:\'YYYY-MM-DDTHH:mm:ssZ\'}}" class="alert-time">';
+        template += '{{log.starttime | amDateFormat:\'ddd, MMM D YYYY, h:mm:ssa\'}}</time> ';
+        template += 'Displaying alert for <strong>{{log.code}}</strong>. Expires in 60s.</div>';
+
+        template += '<div class="visible-xs alert alert-info alert-dismissable">';
+        template += '<button type="button" class="close" data-dismiss="alert" aria-hidden="true" ng-click="cancelAlert(log.code)">&times;</button>';
+        template += '<time datetime="{{log.starttime | amDateFormat:\'YYYY-MM-DDTHH:mm:ssZ\'}}" class="alert-time">';
+        template += '{{log.starttime | amDateFormat:\'YYYY-MM-DD HH:mm:ss\'}}</time> ';
+        template += 'Alerting <strong>{{log.code}}</strong></div></div>';
+
+        return {
+            restrict: 'E',
+            transclude: true,
+            template: template,
+            replace: true
+        };
+    });
+    app.factory('Alerts', function($resource) {
+        return $resource('/alerts/:code', {
+            code: '@code'
+        }, {
+            save: {
+                method: 'PUT'
+            }
+        });
+    });
+    app.controller('AlertController', function($scope, $interval, Alerts) {
+        $scope.alerts = [];
+        $scope.refresh = function() {
+            Alerts.query().$promise.then(function(alerts) {
+                $scope.alerts = alerts;
+            });
+        };
+
+        $scope.sendAlert = function(code) {
+            $scope.codeForm.$setPristine();
+            $scope.pagerCode = undefined;
+            var alert = new Alerts({
+                code: code
+            });
+            alert.$save();
+            $scope.refresh();
+        };
+
+        $scope.cancelAlert = function(code) {
+            console.log('canceling', code);
+            Alerts.remove({
+                code: code
+            }).$promise.then(function() {
+                $scope.refresh();
+            });
+
+        };
+
+        $scope.cancelAllAlerts = function() {
+            Alerts.remove().$promise.then(function() {
+                $scope.refresh();
+            });
+        };
+
+        var refreshInterval = $interval(function() {
+            $scope.refresh();
+        }, 2500);
+        $scope.$on('$destroy', function() {
+            $interval.cancel(refreshInterval);
+        });
+        $scope.refresh();
+    });
+    </script>
+</body>
+
+</html>

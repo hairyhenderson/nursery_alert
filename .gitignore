@@ -1,0 +1,5 @@
+coverage
+nursery_alert.log
+node_modules
+*.pyc
+config.json

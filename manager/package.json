@@ -12,14 +12,15 @@
     "express-params": "~0.0.3",
     "jsclass": "~4.0.5",
     "lodash": "~2.4.1",
-    "passport": "~0.2.0",
+    "passport": "~0.2.1",
     "passport-http": "~0.2.2"
   },
   "devDependencies": {
-    "mocha": "~1.18.2",
-    "sinon": "~1.9.1",
-    "should": "~3.3.1",
-    "istanbul": "^0.2.7",
-    "request": "~2.34.0"
+    "mocha": "^2.0.1",
+    "sinon": "^1.11.1",
+    "should": "^4.1.0",
+    "istanbul": "^0.3.2",
+    "request": "^2.47.0",
+    "should-http": "^0.0.2"
   }
 }

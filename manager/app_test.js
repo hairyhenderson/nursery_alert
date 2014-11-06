@@ -1,4 +1,5 @@
-var should = require('should');
+var should = require('should')
+require('should-http')
 var assert = require('assert'),
 	request = require('request'),
 	a = require('./app'),

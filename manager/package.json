@@ -16,11 +16,11 @@
     "passport-http": "~0.2.2"
   },
   "devDependencies": {
-    "mocha": "^2.0.1",
-    "sinon": "^1.12.1",
-    "should": "^4.3.0",
-    "istanbul": "^0.3.2",
-    "request": "^2.48.0",
-    "should-http": "^0.0.2"
+    "mocha": "~2.0.1",
+    "sinon": "~1.12.1",
+    "should": "~4.3.0",
+    "istanbul": "~0.3.2",
+    "request": "~2.49.0",
+    "should-http": "~0.0.2"
   }
 }

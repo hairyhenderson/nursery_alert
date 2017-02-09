@@ -12,33 +12,34 @@ import logging
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
 
 FONT="FreeSans"
-FONT_SIZE=650
+# Decrease this if the code is too wide for the screen
+FONT_SIZE=620
 BOLD=True
 
 class PyScope(object):
 	screen = None
 	scr_center = None
 	font = None
-	
+
 	def __init__(self):
 		"Initializes a new pygame screen using the framebuffer"
 		logging.info("Initializing PyScope")
 		self.init_driver()
-		self.init_screen()		
+		self.init_screen()
 		self.init_font()
-		
+
 		# Clear the screen to start
 		self.screen.fill((0, 0, 0))
 		# Render the screen
 		pygame.display.update()
-	
+
 	def init_driver(self):
 		# Based on "Python GUI in Linux frame buffer"
 		# http://www.karoltomala.com/blog/?p=679
 		disp_no = os.getenv("DISPLAY")
 		if disp_no:
 			logging.info("I'm running under X display = {0}".format(disp_no))
-		
+
 		# Check which frame buffer drivers are available
 		# Start with fbcon since directfb hangs with composite output
 		drivers = ['fbcon', 'directfb', 'svgalib', 'x11']
@@ -56,11 +57,11 @@ class PyScope(object):
 				continue
 			found = True
 			break
-	
+
 		if not found:
 			raise Exception('No suitable video driver found!')
 		logging.info("Using %s for display" % pygame.display.get_driver())
-		
+
 	def init_screen(self):
 		size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
 		logging.info("Framebuffer size: " + str(size[0]) + " x " + str(size[1]))

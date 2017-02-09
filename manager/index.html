@@ -43,7 +43,7 @@
             <div class="col-xs-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
                 <form name="codeForm" novalidate>
                     <div class="input-group input-group-lg" ng-class="{error: codeForm.code.$invalid &amp;&amp; !codeForm.code.$pristine}">
-                        <input type="text" name="code" class="form-control" placeholder="Pager code" maxlength="3" autofocus required ng-model="pagerCode" valid-code/>
+                        <input type="text" name="code" class="form-control" placeholder="Pager code" maxlength="4" autofocus required ng-model="pagerCode" valid-code/>
                         <span class="input-group-btn">
                             <button ng-click="sendAlert(pagerCode)" ng-disabled="codeForm.$invalid" class="btn btn-primary">Submit <b ng-hide="codeForm.$invalid">{{pagerCode}}</b>
                             </button>
@@ -73,7 +73,7 @@
                 var validCode = function(inputValue) {
                     if (inputValue) {
                         var capitalized = inputValue.toUpperCase();
-                        var valid = /^[A-Z0-9]{3,3}/.test(capitalized);
+                        var valid = /^[A-Z0-9]{3,4}/.test(capitalized);
                         ngModel.$setValidity('pattern', valid);
 
                         if (capitalized !== inputValue) {

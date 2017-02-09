@@ -25,7 +25,7 @@ class AlertHandler(object):
 		""" PUT /:code
 			Displays the named alert. Returns a 204.
 		"""
-		if self.path.startswith("/") and len(self.path) is 4:
+		if self.path.startswith("/") and len(self.path) <= 5:
 			code = self.path[len("/"):]
 			getScope().show_text(code)
 			self.send_response(201)
@@ -42,7 +42,7 @@ class AlertListener(SimpleHTTPServer.SimpleHTTPRequestHandler, AlertHandler):
 	""" """
 	def log_message(self, format, *args):
 		logging.info(format, *args)
-	
+
 	def do_GET(self):
 		""" GET / - returns status... """
 		self.send_response(200)

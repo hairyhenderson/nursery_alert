@@ -92,7 +92,7 @@ passport.use(basic);
 passport.use(digest);
 
 var setupRoutes = function(alerts) {
-	app.param('code', /^[A-Z0-9]{3,3}$/);
+	app.param('code', /^[A-Z0-9]{3,4}$/);
 
 	var self = this;
 

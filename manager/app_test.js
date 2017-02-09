@@ -21,7 +21,11 @@ var createServer = function(done) {
 	server.listen(0, function() {
 		var addr = server.address();
 		/* istanbul ignore next */
-		baseUrl = 'http://' + (addr.address === '0.0.0.0' ? 'localhost' : addr.address) + ':' + addr.port;
+		if (addr.address === '0.0.0.0' || addr.address === '::') {
+			baseUrl = 'http://localhost:' + addr.port;
+		} else {
+			baseUrl = 'http://' + addr.address + ':' + addr.port;
+		}
 		console.log("Server listening at " + baseUrl);
 		fs.readFile('index.html', {
 			encoding: 'utf-8'
@@ -106,7 +110,7 @@ describe('Nursery Alerter - HTTP Interface Tests', function() {
 	});
 	describe('GET /alerts - dummy alerts', function() {
 		beforeEach(function() {
-			alerts.add("ABC");
+			alerts.add("ABCD");
 		});
 
 		afterEach(function() {
@@ -117,7 +121,7 @@ describe('Nursery Alerter - HTTP Interface Tests', function() {
 			request.get(baseUrl + '/alerts', function(err, res, body) {
 				res.should.have.status(200);
 				res.should.be.json;
-				JSON.parse(body).should.have.property("ABC");
+				JSON.parse(body).should.have.property("ABCD");
 				done();
 			}).auth(USER, PASS);
 		});
@@ -139,19 +143,19 @@ describe('Nursery Alerter - HTTP Interface Tests', function() {
 		beforeEach(function() {
 			clock = sinon.useFakeTimers(0);
 			clock.tick(12345);
-			alerts.add("A2A");
+			alerts.add("A2A3");
 			clock.restore();
 		});
 		afterEach(function() {});
 
-		it('should reject codes longer than 3 characters', function(done) {
-			request.get(baseUrl + '/alerts/AAAA', function(error, response, body) {
+		it('should reject codes longer than 4 characters', function(done) {
+			request.get(baseUrl + '/alerts/AAAAA', function(error, response, body) {
 				response.should.have.status(404);
 				done();
 			}).auth(USER, PASS);
 		});
 		it('should return the requested code', function(done) {
-			request.get(baseUrl + '/alerts/A2A', {
+			request.get(baseUrl + '/alerts/A2A3', {
 				json: true
 			}, function(error, response, body) {
 				response.should.have.status(200);
@@ -163,7 +167,7 @@ describe('Nursery Alerter - HTTP Interface Tests', function() {
 			}).auth(USER, PASS);
 		});
 		it('returns 404 for nonexistant code', function(done) {
-			request.get(baseUrl + '/alerts/BBB', {
+			request.get(baseUrl + '/alerts/BBBB', {
 				json: true
 			}, function(err, res, body) {
 				res.should.have.status(404);
@@ -178,9 +182,9 @@ describe('Nursery Alerter - HTTP Interface Tests', function() {
 		afterEach(function() {});
 
 		it('creates a new alert', function(done) {
-			request.put(baseUrl + '/alerts/123', function(error, response, body) {
+			request.put(baseUrl + '/alerts/1234', function(error, response, body) {
 				response.should.have.status(201);
-				alerts.get('123').should.exist;
+				alerts.get('1234').should.exist;
 				done();
 			}).auth(USER, PASS);
 		});
@@ -198,16 +202,16 @@ describe('Nursery Alerter - HTTP Interface Tests', function() {
 		afterEach(function() {});
 
 		it('cancels an alert', function(done) {
-			alerts.add("FOO");
+			alerts.add("FOO2");
 
-			request.del(baseUrl + '/alerts/FOO', function(error, response, body) {
+			request.del(baseUrl + '/alerts/FOO2', function(error, response, body) {
 				response.should.have.status(204);
 				alerts.getAll().should.eql({});
 				done();
 			}).auth(USER, PASS);
 		});
 		it('returns 404 given an unknown code', function(done) {
-			request.del(baseUrl + '/alerts/BLA', function(error, response, body) {
+			request.del(baseUrl + '/alerts/BLAB', function(error, response, body) {
 				response.should.have.status(404);
 				done();
 			}).auth(USER, PASS);
@@ -215,9 +219,9 @@ describe('Nursery Alerter - HTTP Interface Tests', function() {
 	});
 	describe('DELETE /alerts', function() {
 		beforeEach(function(done) {
-			alerts.add('FOO');
-			alerts.add('BAR');
-			alerts.add('BAZ', done);
+			alerts.add('FOO1');
+			alerts.add('BAR2');
+			alerts.add('BAZ3', done);
 		});
 		it('cancels all alerts', function(done) {
 			request.del(baseUrl + '/alerts', function(error, response, body) {

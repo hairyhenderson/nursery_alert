@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "mocha": "2.5.3",
-    "sinon": "1.12.2",
+    "sinon": "1.17.7",
     "should": "4.6.5",
     "istanbul": "0.4.5",
     "request": "2.88.0",

@@ -20,7 +20,7 @@
     "sinon": "1.12.2",
     "should": "4.4.4",
     "istanbul": "0.4.5",
-    "request": "2.51.0",
+    "request": "2.88.0",
     "should-http": "0.0.4"
   }
 }

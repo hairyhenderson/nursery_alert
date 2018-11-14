@@ -13,7 +13,7 @@
     "jsclass": "4.0.5",
     "lodash": "2.4.2",
     "passport": "0.4.0",
-    "passport-http": "0.2.2"
+    "passport-http": "0.3.0"
   },
   "devDependencies": {
     "mocha": "2.5.3",

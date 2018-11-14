@@ -11,7 +11,7 @@
     "express": "4.16.4",
     "express-params": "0.0.3",
     "jsclass": "4.0.5",
-    "lodash": "2.4.2",
+    "lodash": "4.17.11",
     "passport": "0.4.0",
     "passport-http": "0.3.0"
   },

@@ -18,7 +18,7 @@
   "devDependencies": {
     "mocha": "5.2.0",
     "sinon": "1.17.7",
-    "should": "4.6.5",
+    "should": "13.2.3",
     "istanbul": "0.4.5",
     "request": "2.88.0",
     "should-http": "0.1.1"

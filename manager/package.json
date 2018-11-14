@@ -21,6 +21,6 @@
     "should": "4.6.5",
     "istanbul": "0.4.5",
     "request": "2.88.0",
-    "should-http": "0.0.4"
+    "should-http": "0.1.1"
   }
 }

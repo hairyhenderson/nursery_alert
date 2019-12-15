@@ -12,7 +12,7 @@
     "express-params": "0.0.3",
     "jsclass": "4.0.5",
     "lodash": "4.17.14",
-    "passport": "0.4.0",
+    "passport": "0.4.1",
     "passport-http": "0.3.0"
   },
   "devDependencies": {
